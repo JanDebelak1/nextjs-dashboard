@@ -1,0 +1,17 @@
+- name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: tvoj-uporabnik/nextjs-dashboard:latest
+          # Tole je ključni del:
+          build-args: |
+            NEXT_PUBLIC_API_URL=http://api-v-minikubu.local
+            ANOTHER_VAR=nekaj-drugega
+- name: Test Docker Run
+        run: |
+          docker run -d --name test-container -e NEXT_PUBLIC_API_URL=test_url tvoj-uporabnik/nextjs-dashboard:latest
+          sleep 5
+          docker ps | grep test-container
+          docker logs test-container
+          docker rm -f test-container
